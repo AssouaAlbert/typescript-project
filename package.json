@@ -5,15 +5,23 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "lite-server"
+    "start": "tsc --watch"
   },
   "keywords": [
     "typescript",
     "course"
   ],
-  "author": "Maximilian Schwarzmüller",
+  "author": "Albert Assoua",
   "license": "ISC",
   "devDependencies": {
     "lite-server": "^2.5.4"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AssouaAlbert/typescript-project.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AssouaAlbert/typescript-project/issues"
+  },
+  "homepage": "https://github.com/AssouaAlbert/typescript-project#readme"
 }
