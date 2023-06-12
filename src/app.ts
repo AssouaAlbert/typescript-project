@@ -17,62 +17,93 @@ function autobind(_: any, _2: string, descriptor: PropertyDescriptor): any {
   };
   return newDescriptor;
 }
+/* ---------------------------------- Enum ---------------------------------- */
+enum Status {
+  FINISHED,
+  ACTIVE,
+}
+/* ----------------------------- Function types ----------------------------- */
+type Listener = (item: Projects[]) => void;
 
 /* ------------------------------- Interfaces ------------------------------- */
 interface Validation {
-    value: string | number;
-    required?: boolean;
-    minLenght?: number;
-    maxLenght?: number;
-    min?: number;
-    max?: number;
-  }
+  value: string | number;
+  required?: boolean;
+  minLenght?: number;
+  maxLenght?: number;
+  min?: number;
+  max?: number;
+}
 
 /* -------------------------------- Functions ------------------------------- */
 function validate(validatable: Validation): boolean {
-    let isValidate = true;
-    if (validatable.required) {
-      isValidate = isValidate && validatable.value.toString().trim().length !== 0;
-    }
-    if (validatable.minLenght != null && typeof validatable.value == "string") {
-      isValidate =
-        isValidate && validatable.value.trim().length >= validatable.minLenght;
-    }
-    if (validatable.maxLenght != null && typeof validatable.value == "string") {
-      isValidate =
-        isValidate && validatable.value.trim().length <= validatable.maxLenght;
-    }
-    if (validatable.min != null && typeof validatable.value == "number") {
-      isValidate = isValidate && validatable.value > validatable.min;
-    }
-    if (validatable.max != null && typeof validatable.value == "number") {
-      isValidate = isValidate && validatable.value < validatable.max;
-    }
-    return isValidate;
+  let isValidate = true;
+  if (validatable.required) {
+    isValidate = isValidate && validatable.value.toString().trim().length !== 0;
   }
+  if (validatable.minLenght != null && typeof validatable.value == "string") {
+    isValidate =
+      isValidate && validatable.value.trim().length >= validatable.minLenght;
+  }
+  if (validatable.maxLenght != null && typeof validatable.value == "string") {
+    isValidate =
+      isValidate && validatable.value.trim().length <= validatable.maxLenght;
+  }
+  if (validatable.min != null && typeof validatable.value == "number") {
+    isValidate = isValidate && validatable.value > validatable.min;
+  }
+  if (validatable.max != null && typeof validatable.value == "number") {
+    isValidate = isValidate && validatable.value < validatable.max;
+  }
+  return isValidate;
+}
 
 /* --------------------------------- Classes -------------------------------- */
+
+class Projects {
+  constructor(
+    public id: string,
+    public title: string,
+    public description: string,
+    public people: number,
+    public status: Status
+  ) {
+    this.id = id;
+    this.title = title;
+    this.description = description;
+    this.people = people;
+    this.status = status;
+  }
+}
 //Project State Management
 class ProjectState {
-  private projects: any[] = [];
+  private listeners: Listener[] = [];
+  private projects: Projects[] = [];
   private static instance: ProjectState;
   private constructor() {}
 
-  private static getInstance(): ProjectState {
+  static getInstance(): ProjectState {
     if (this.instance) {
       return this.instance;
     }
     return (this.instance = new ProjectState());
   }
-
-  addProject(title: string, description: string, numberOfPeople: number) {
-    const newProject = {
-      id: Math.random().toString(),
+  addListeners(listenerFn: Listener) {
+    this.listeners.push(listenerFn);
+  }
+  addProject(title: string, description: string, people: number) {
+    const newProject: Projects = new Projects(
+      Math.random().toString(),
       title,
       description,
-      people: numberOfPeople,
-    };
+      people,
+      Status.ACTIVE
+    );
+
     this.projects.push(newProject);
+    for (const listenerFn of this.listeners) {
+      listenerFn([...this.projects]);
+    }
   }
 }
 
@@ -80,7 +111,9 @@ class ProjectList {
   templateElement: HTMLTemplateElement;
   hostElement: HTMLDivElement;
   element: HTMLElement;
+  assignedProjects: Projects[];
   constructor(private type: "active" | "finished") {
+    this.assignedProjects = [];
     this.templateElement = <HTMLTemplateElement>(
       document.getElementById("project-list")
     );
@@ -91,8 +124,27 @@ class ProjectList {
     );
     this.element = <HTMLElement>importedNode.querySelector("section");
     this.element.id = `${this.type}-projects`;
+    projectState.addListeners((projects: Projects[]) => {
+      const relevantProjects = projects.filter((proj) => {
+        if (this.type == "active") {
+          return proj.status === Status.ACTIVE;
+        }
+        return proj.status === Status.FINISHED;
+      });
+      this.assignedProjects = relevantProjects;
+      this.renderProjects();
+    });
     this.attach();
     this.render();
+  }
+  private renderProjects() {
+    const listId = document.getElementById(`${this.type}-project-list`)!;
+    listId.innerHTML = "";
+    for (const proj of this.assignedProjects) {
+      const listItem = document.createElement("li");
+      listItem.textContent = proj.title;
+      listId?.insertAdjacentElement("beforeend", listItem);
+    }
   }
   private configure() {
     // this.element.addEventListener("submit", this.submitHandler);
@@ -117,6 +169,7 @@ class ProjectInput {
   descriptionInputElement: HTMLInputElement;
   peopleInputElement: HTMLInputElement;
   constructor() {
+
     this.templateElement = <HTMLTemplateElement>(
       document.getElementById("project-input")!
     );
@@ -175,6 +228,7 @@ class ProjectInput {
     const userInput = this.gatherUserInput();
     if (Array.isArray(userInput)) {
       const [title, description, people] = userInput;
+      projectState.addProject(title, description, people);
       this.clearInputs();
     }
   }
@@ -191,6 +245,7 @@ class ProjectInput {
 
 /* ---------------------------------- Inits --------------------------------- */
 
+let projectState = ProjectState.getInstance();
 let p = new ProjectInput();
 let activeProjectList = new ProjectList("active");
 let finishedProjectList = new ProjectList("finished");
