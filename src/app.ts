@@ -41,9 +41,9 @@ interface Dragable {
   dragEndHandler(e: DragEvent): void;
 }
 interface DragTarget {
-  dragOverHandelr(e: DragEvent): void;
-  dropHandelr(e: DragEvent): void;
-  dragLeaveHandelr(e: DragEvent): void;
+  dragOverHandeler(e: DragEvent): void;
+  dropHandeler(e: DragEvent): void;
+  dragLeaveHandeler(e: DragEvent): void;
 }
 
 /* -------------------------------- Functions ------------------------------- */
@@ -143,8 +143,8 @@ class ProjectItem
     this.render();
   }
   configure(): void {
-    this.element.addEventListener("dragstart", this.dragStartHandler)
-    this.element.addEventListener("dragend", this.dragEndHandler)
+    this.element.addEventListener("dragstart", this.dragStartHandler);
+    this.element.addEventListener("dragend", this.dragEndHandler);
   }
   render(): void {
     this.element.draggable = true;
@@ -154,12 +154,12 @@ class ProjectItem
   }
   @autobind
   dragStartHandler(e: DragEvent): void {
-    console.log(e)
+    e.dataTransfer!.setData('text/plain', this.project.id)
+    e.dataTransfer!.effectAllowed= "move"
   }
   @autobind
   dragEndHandler(e: DragEvent): void {
-    console.log(e)
-
+    console.log(e);
   }
 }
 //Project State Management
@@ -192,7 +192,10 @@ class ProjectState extends State<Projects> {
   }
 }
 
-class ProjectList extends Component<HTMLDListElement, HTMLElement> {
+class ProjectList
+  extends Component<HTMLDListElement, HTMLElement>
+  implements DragTarget
+{
   assignedProjects: Projects[];
   constructor(private type: "active" | "finished") {
     super("project-list", "app", false, `${type}-projects`);
@@ -207,6 +210,7 @@ class ProjectList extends Component<HTMLDListElement, HTMLElement> {
       this.assignedProjects = relevantProjects;
       this.renderProjects();
     });
+    this.configure();
     this.render();
   }
   private renderProjects() {
@@ -217,13 +221,28 @@ class ProjectList extends Component<HTMLDListElement, HTMLElement> {
     }
   }
   configure() {
-    // this.element.addEventListener("submit", this.submitHandler);
+    this.element.addEventListener("dragover", this.dragLeaveHandeler);
+    this.element.addEventListener("dragleave", this.dragOverHandeler);
+    this.element.addEventListener("drop", this.dropHandeler);
   }
   render() {
     const listId = `${this.type}-project-list`;
     this.element.querySelector("ul")!.id = `${listId}`;
     this.element.querySelector("h2")!.textContent =
       `${this.type} Projects`.toUpperCase();
+  }
+  @autobind
+  dragOverHandeler(e: DragEvent): void {
+
+    const listEl = this.element.querySelector("ul")!;
+    listEl.classList.remove("droppabble");
+  }
+  @autobind
+  dropHandeler(e: DragEvent): void {}
+  @autobind
+  dragLeaveHandeler(e: DragEvent): void {
+    const listEl = this.element.querySelector("ul")!;
+    listEl.classList.add("droppabble");
   }
 }
 
