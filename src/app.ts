@@ -35,6 +35,17 @@ interface Validation {
   max?: number;
 }
 
+//Drag and drop interface
+interface Dragable {
+  dragStartHandler(e: DragEvent): void;
+  dragEndHandler(e: DragEvent): void;
+}
+interface DragTarget {
+  dragOverHandelr(e: DragEvent): void;
+  dropHandelr(e: DragEvent): void;
+  dragLeaveHandelr(e: DragEvent): void;
+}
+
 /* -------------------------------- Functions ------------------------------- */
 function validate(validatable: Validation): boolean {
   let isValidate = true;
@@ -115,7 +126,10 @@ class Projects {
   }
 }
 
-class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
+class ProjectItem
+  extends Component<HTMLUListElement, HTMLLIElement>
+  implements Dragable
+{
   private project: Projects;
   get persons() {
     return this.project.people === 1
@@ -128,11 +142,24 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
     this.configure();
     this.render();
   }
-  configure(): void {}
+  configure(): void {
+    this.element.addEventListener("dragstart", this.dragStartHandler)
+    this.element.addEventListener("dragend", this.dragEndHandler)
+  }
   render(): void {
+    this.element.draggable = true;
     this.element.querySelector("h2")!.textContent = this.project.title;
     this.element.querySelector("h3")!.textContent = this.persons;
     this.element.querySelector("p")!.textContent = this.project.description;
+  }
+  @autobind
+  dragStartHandler(e: DragEvent): void {
+    console.log(e)
+  }
+  @autobind
+  dragEndHandler(e: DragEvent): void {
+    console.log(e)
+
   }
 }
 //Project State Management
