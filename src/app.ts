@@ -1,9 +1,12 @@
 /* --------------------------------- Imports -------------------------------- */
+//Drag and drop interface
+/// <reference path="./interfaces/drag-drop.ts"/>
 // import ProjectList from "./projectList";
 // import {autobind} from "./decorators/autobind";
 // import validate from "./helpers/validate";
 
-/* ------------------------------- Decorators ------------------------------- */
+namespace App {
+  /* ------------------------------- Decorators ------------------------------- */
 // Auto Bind decorator
 function autobind(_: any, _2: string, descriptor: PropertyDescriptor): any {
   const originalMethod = descriptor.value;
@@ -33,17 +36,6 @@ interface Validation {
   maxLenght?: number;
   min?: number;
   max?: number;
-}
-
-//Drag and drop interface
-interface Dragable {
-  dragStartHandler(e: DragEvent): void;
-  dragEndHandler(e: DragEvent): void;
-}
-interface DragTarget {
-  dragOverHandeler(e: DragEvent): void;
-  dropHandeler(e: DragEvent): void;
-  dragLeaveHandeler(e: DragEvent): void;
 }
 
 /* -------------------------------- Functions ------------------------------- */
@@ -134,7 +126,7 @@ class ProjectItem
   get persons() {
     return this.project.people === 1
       ? "1 person"
-      : `${this.project.people} + persons assigned`;
+      : `${this.project.people} persons assigned`;
   }
   constructor(hostId: string, project: Projects) {
     super("single-project", hostId, false, project.id);
@@ -154,8 +146,8 @@ class ProjectItem
   }
   @autobind
   dragStartHandler(e: DragEvent): void {
-    e.dataTransfer!.setData('text/plain', this.project.id)
-    e.dataTransfer!.effectAllowed= "move"
+    e.dataTransfer!.setData("text/plain", this.project.id);
+    e.dataTransfer!.effectAllowed = "move";
   }
   @autobind
   dragEndHandler(e: DragEvent): void {
@@ -233,7 +225,6 @@ class ProjectList
   }
   @autobind
   dragOverHandeler(e: DragEvent): void {
-
     const listEl = this.element.querySelector("ul")!;
     listEl.classList.remove("droppabble");
   }
@@ -316,3 +307,5 @@ let projectState = ProjectState.getInstance();
 let p = new ProjectInput();
 let activeProjectList = new ProjectList("active");
 let finishedProjectList = new ProjectList("finished");
+
+}
