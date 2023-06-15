@@ -1,6 +1,5 @@
-namespace App {
-  export enum Status {
+  export  enum Status {
     FINISHED,
     ACTIVE,
   }
-}
+

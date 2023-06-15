@@ -1,31 +1,33 @@
-namespace App {
-  export class ProjectState extends State<Projects> {
-    private projects: Projects[] = [];
-    private static instance: ProjectState;
-    private constructor() {
-      super();
-    }
+import { Status } from "../enum/status.js";
+import Projects from "../classes/base/Projects.js";
+import State from "../interfaces/state.js";
 
-    static getInstance(): ProjectState {
-      if (this.instance) {
-        return this.instance;
-      }
-      return (this.instance = new ProjectState());
-    }
-    addProject(title: string, description: string, people: number) {
-      const newProject: Projects = new Projects(
-        Math.random().toString(),
-        title,
-        description,
-        people,
-        Status.ACTIVE
-      );
+class ProjectState extends State<Projects> {
+  private projects: Projects[] = [];
+  private static instance: ProjectState;
+  private constructor() {
+    super();
+  }
 
-      this.projects.push(newProject);
-      for (const listenerFn of this.listeners) {
-        listenerFn([...this.projects]);
-      }
+  static getInstance(): ProjectState {
+    if (this.instance) {
+      return this.instance;
+    }
+    return (this.instance = new ProjectState());
+  }
+  addProject(title: string, description: string, people: number) {
+    const newProject: Projects = new Projects(
+      Math.random().toString(),
+      title,
+      description,
+      people,
+      Status.ACTIVE
+    );
+
+    this.projects.push(newProject);
+    for (const listenerFn of this.listeners) {
+      listenerFn([...this.projects]);
     }
   }
-  export let projectState = ProjectState.getInstance();
 }
+export default ProjectState.getInstance();

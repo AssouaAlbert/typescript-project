@@ -15,12 +15,10 @@
 // / <reference path="./classes/base/Component.ts"/>
 // / <reference path="./classes/base/Projects.ts"/>
 
-/// <reference path="./components/ProjectInput.ts"/>
-/// <reference path="./components/ProjectList.ts"/>
+import ProjectInput from "./components/ProjectInput.js"
+import ProjectList from "./components/ProjectList.js"
 
-namespace App {
   /* ---------------------------------- Inits --------------------------------- */
   new ProjectInput();
   new ProjectList("active");
   new ProjectList("finished");
-}

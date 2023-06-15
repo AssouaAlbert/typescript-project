@@ -1,5 +1,4 @@
-namespace App {
-  export interface Validation {
+  export default interface Validation {
     value: string | number;
     required?: boolean;
     minLenght?: number;
@@ -7,4 +6,3 @@ namespace App {
     min?: number;
     max?: number;
   }
-}
