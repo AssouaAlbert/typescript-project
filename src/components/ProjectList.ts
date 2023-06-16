@@ -1,18 +1,12 @@
-import { Status } from "../enum/status.js";
-import validate from "../helpers/validate.js";
-import autobind from "../decorators/autobind.js";
+import { Status } from "../enum/status";
+import autobind from "../decorators/autobind";
 
-import { Dragable, DragTarget } from "../interfaces/drag-drop.js";
-import state from "../interfaces/state.js";
-import Validation from "../interfaces/validation.js";
+import { Dragable, DragTarget } from "../interfaces/drag-drop";
+import projectState from "../state/State";
 
-import Listners from "../types/listeners.js";
-
-import projectState from "../state/State.js";
-
-import Component from "../classes/base/Component.js";
-import Projects from "../classes/base/Projects.js";
-import ProjectItem from "../components/ProjectItem.js";
+import Component from "../classes/base/Component";
+import Projects from "../classes/base/Projects";
+import ProjectItem from "../components/ProjectItem";
 
 export default class ProjectList
   extends Component<HTMLDListElement, HTMLElement>

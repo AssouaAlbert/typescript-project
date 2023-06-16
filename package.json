@@ -1,12 +1,12 @@
 {
   "name": "understanding-typescript",
   "version": "1.0.0",
-  "type": "module",
   "description": "Understanding TypeScript Course Setup",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsc --watch"
+    "start": "tsc --watch",
+    "build": "webpack "
   },
   "keywords": [
     "typescript",
@@ -15,7 +15,11 @@
   "author": "Albert Assoua",
   "license": "ISC",
   "devDependencies": {
-    "lite-server": "^2.5.4"
+    "lite-server": "^2.5.4",
+    "ts-loader": "^9.4.3",
+    "typescript": "^5.1.3",
+    "webpack": "^5.87.0",
+    "webpack-cli": "^5.1.4"
   },
   "repository": {
     "type": "git",
@@ -24,5 +28,9 @@
   "bugs": {
     "url": "https://github.com/AssouaAlbert/typescript-project/issues"
   },
-  "homepage": "https://github.com/AssouaAlbert/typescript-project#readme"
+  "homepage": "https://github.com/AssouaAlbert/typescript-project#readme",
+  "dependencies": {
+    "@types/lodash": "^4.14.195",
+    "lodash": "^4.17.21"
+  }
 }

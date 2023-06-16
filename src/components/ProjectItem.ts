@@ -1,17 +1,8 @@
-import { Status } from "../enum/status.js";
-import validate from "../helpers/validate.js";
-import autobind from "../decorators/autobind.js";
+import autobind from "../decorators/autobind";
 
-import { Dragable, DragTarget } from "../interfaces/drag-drop.js";
-import state from "../interfaces/state.js";
-import Validation from "../interfaces/validation.js";
-
-import Listners from "../types/listeners.js";
-
-import projectState from "../state/State.js";
-
-import Component from "../classes/base/Component.js";
-import Projects from "../classes/base/Projects.js";
+import { Dragable, DragTarget } from "../interfaces/drag-drop";
+import Component from "../classes/base/Component";
+import Projects from "../classes/base/Projects";
 
 export default class ProjectItem
   extends Component<HTMLUListElement, HTMLLIElement>
@@ -46,6 +37,5 @@ export default class ProjectItem
   }
   @autobind
   dragEndHandler(e: DragEvent): void {
-    console.log(e);
   }
 }
